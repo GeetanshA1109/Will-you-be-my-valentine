@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will You Be My Valentine? 💝</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #ffeef8 0%, #ffe0f0 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(255, 105, 180, 0.3);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            color: #ff69b4;
+            margin-bottom: 30px;
+            font-size: 2em;
+        }
+
+        .quiz-question {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .quiz-question.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .question-text {
+            font-size: 1.3em;
+            color: #333;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option-btn {
+            padding: 15px 25px;
+            font-size: 1.1em;
+            border: 2px solid #ff69b4;
+            background: white;
+            color: #ff69b4;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Georgia', serif;
+        }
+
+        .option-btn:hover {
+            background: #ff69b4;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .feedback {
+            margin-top: 20px;
+            font-size: 3em;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .feedback-text {
+            font-size: 0.5em;
+            color: #ff1744;
+            font-weight: bold;
+        }
+
+        .valentine-page {
+            display: none;
+        }
+
+        .valentine-page.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .valentine-question {
+            font-size: 2.5em;
+            color: #ff1744;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .button-container {
+            position: relative;
+            height: 300px;
+            margin-top: 30px;
+        }
+
+        .yes-btn, .no-btn {
+            padding: 15px 40px;
+            font-size: 1.3em;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-family: 'Georgia', serif;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .yes-btn {
+            background: #ff69b4;
+            color: white;
+            margin-right: 20px;
+        }
+
+        .yes-btn:hover {
+            background: #ff1744;
+            transform: scale(1.1);
+        }
+
+        .no-btn {
+            background: #ddd;
+            color: #666;
+            position: absolute;
+            transition: all 0.3s ease;
+        }
+
+        .pleading-text {
+            color: #ff1744;
+            font-size: 1.5em;
+            margin-top: 20px;
+            min-height: 40px;
+            font-style: italic;
+        }
+
+        .final-page {
+            display: none;
+        }
+
+        .final-page.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .heart-animation {
+            font-size: 5em;
+            animation: heartbeat 1s infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .celebration {
+            font-size: 2em;
+            color: #ff69b4;
+            margin-top: 20px;
+        }
+
+        .score-display {
+            font-size: 1.8em;
+            color: #ff1744;
+            margin-top: 30px;
+            padding: 20px;
+            background: #fff0f5;
+            border-radius: 15px;
+            font-weight: bold;
+        }
+
+        .progress {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .progress-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ffc0cb;
+        }
+
+        .progress-dot.active {
+            background: #ff69b4;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Quiz Questions -->
+        <div id="quiz-container">
+            <div class="progress" id="progress"></div>
+            
+            <div class="quiz-question active" data-question="1" data-answer="0">
+                <h1>Question 1</h1>
+                <p class="question-text">Where did we first go for our date?</p>
+                <div class="options">
+                    <button class="option-btn" data-option="0">To a park</button>
+                    <button class="option-btn" data-option="1">In a club</button>
+                    <button class="option-btn" data-option="2">Rice University Cafeteria</button>
+                    <button class="option-btn" data-option="3">At home</button>
+                </div>
+                <div class="feedback"></div>
+            </div>
+
+            <div class="quiz-question" data-question="2" data-answer="1">
+                <h1>Question 2</h1>
+                <p class="question-text">What are my fondest memory with you?</p>
+                <div class="options">
+                    <button class="option-btn" data-option="0">Us travelling</button>
+                    <button class="option-btn" data-option="1">Us Sleeping together</button>
+                    <button class="option-btn" data-option="2">Us cooking food together</button>
+                    <button class="option-btn" data-option="3">Calling you multiple times to irritate you</button>
+                </div>
+                <div class="feedback"></div>
+            </div>
+
+            <div class="quiz-question" data-question="3" data-answer="2">
+                <h1>Question 3</h1>
+                <p class="question-text">Where did we take my favourite pictures of us?</p>
+                <div class="options">
+                    <button class="option-btn" data-option="0">At a park</button>
+                    <button class="option-btn" data-option="1">Rooftop</button>
+                    <button class="option-btn" data-option="2">In a bar</button>
+                    <button class="option-btn" data-option="3">During a vacation</button>
+                </div>
+                <div class="feedback"></div>
+            </div>
+
+            <div class="quiz-question" data-question="4" data-answer="0">
+                <h1>Question 4</h1>
+                <p class="question-text">What's my favorite color?</p>
+                <div class="options">
+                    <button class="option-btn" data-option="0">Blue</button>
+                    <button class="option-btn" data-option="1">Red</button>
+                    <button class="option-btn" data-option="2">Green</button>
+                    <button class="option-btn" data-option="3">Pink</button>
+                </div>
+                <div class="feedback"></div>
+            </div>
+
+            <div class="quiz-question" data-question="5" data-answer="3">
+                <h1>Question 5</h1>
+                <p class="question-text">What's my favorite song?</p>
+                <div class="options">
+                    <button class="option-btn" data-option="0">"Perfect" by Ed Sheeran</button>
+                    <button class="option-btn" data-option="1">"Love Story" by Taylor Swift</button>
+                    <button class="option-btn" data-option="2">"Thinking Out Loud" by Ed Sheeran</button>
+                    <button class="option-btn" data-option="3">"Star Boy" by The Weeknd</button>
+                </div>
+                <div class="feedback"></div>
+            </div>
+        </div>
+
+        <!-- Valentine Question Page -->
+        <div class="valentine-page" id="valentine-page">
+            <h1 class="valentine-question">Will You Be My Valentine? 💕</h1>
+            <div class="button-container" id="button-container">
+                <button class="yes-btn" id="yes-btn">Yes! 💖</button>
+                <button class="no-btn" id="no-btn">No</button>
+            </div>
+            <div class="pleading-text" id="pleading-text"></div>
+        </div>
+
+        <!-- Final Page -->
+        <div class="final-page" id="final-page">
+            <div class="heart-animation">💝</div>
+            <h1>Yay! You made me the happiest! 🥰</h1>
+            <p class="celebration">Can't wait to celebrate Valentine's Day with you! 💕✨</p>
+            <div class="score-display" id="score-display"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentQuestion = 1;
+        const totalQuestions = 5;
+        let noButtonAttempts = 0;
+        let score = 0;
+        let questionAttempted = false;
+
+        const pleadingMessages = [
+            "Please? 🥺",
+            "What if I ask politely? 🙏",
+            "My cutu baby is angry with me?😭",
+            "Pretty please? 💕",
+            "I promise to make you smile! 😊",
+            "Come on, just say yes! 🌹",
+            "You know you want to! 💖",
+            "I'll be the best valentine ever! ✨",
+            "Don't break my heart! 💔",
+            "Think about all the fun we'll have! 🎉",
+            "You are selecting the wrong option!😩",
+            "You're making this harder than it needs to be! 😅"
+        ];
+
+        // Initialize progress dots
+        function initProgress() {
+            const progressContainer = document.getElementById('progress');
+            for (let i = 0; i < totalQuestions; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'progress-dot' + (i === 0 ? ' active' : '');
+                progressContainer.appendChild(dot);
+            }
+        }
+
+        // Update progress
+        function updateProgress() {
+            const dots = document.querySelectorAll('.progress-dot');
+            dots.forEach((dot, index) => {
+                if (index < currentQuestion) {
+                    dot.classList.add('active');
+                }
+            });
+        }
+
+        // Handle option selection
+        document.querySelectorAll('.option-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const question = this.closest('.quiz-question');
+                const correctAnswer = parseInt(question.dataset.answer);
+                const selectedOption = parseInt(this.dataset.option);
+                const feedback = question.querySelector('.feedback');
+
+                if (selectedOption === correctAnswer) {
+                    feedback.innerHTML = '😊';
+                    
+                    // Add to score only if this is the first attempt on this question
+                    if (!questionAttempted) {
+                        score++;
+                    }
+                    
+                    setTimeout(() => {
+                        if (currentQuestion < totalQuestions) {
+                            question.classList.remove('active');
+                            currentQuestion++;
+                            questionAttempted = false; // Reset for next question
+                            updateProgress();
+                            document.querySelector(`[data-question="${currentQuestion}"]`).classList.add('active');
+                        } else {
+                            document.getElementById('quiz-container').style.display = 'none';
+                            document.getElementById('valentine-page').classList.add('active');
+                        }
+                    }, 1000);
+                } else {
+                    questionAttempted = true; // Mark that question has been attempted
+                    feedback.innerHTML = '😠 <span class="feedback-text">Try again!</span>';
+                }
+            });
+        });
+
+        // Handle No button hover
+        const noBtn = document.getElementById('no-btn');
+        const buttonContainer = document.getElementById('button-container');
+        const pleadingText = document.getElementById('pleading-text');
+
+        noBtn.addEventListener('mouseenter', function() {
+            const containerRect = buttonContainer.getBoundingClientRect();
+            const btnRect = noBtn.getBoundingClientRect();
+            
+            const maxX = containerRect.width - btnRect.width;
+            const maxY = containerRect.height - btnRect.height;
+            
+            const randomX = Math.random() * maxX;
+            const randomY = Math.random() * maxY;
+            
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
+
+            if (noButtonAttempts < pleadingMessages.length) {
+                pleadingText.textContent = pleadingMessages[noButtonAttempts];
+                noButtonAttempts++;
+            }
+        });
+
+        // Handle Yes button click
+        document.getElementById('yes-btn').addEventListener('click', function() {
+            document.getElementById('valentine-page').classList.remove('active');
+            document.getElementById('final-page').classList.add('active');
+            
+            // Display the score
+            const scoreDisplay = document.getElementById('score-display');
+            scoreDisplay.textContent = `Quiz Score: ${score}/${totalQuestions} 🌟`;
+        });
+
+        // Initialize
+        initProgress();
+
+        // Set initial position for No button
+        noBtn.style.left = '200px';
+        noBtn.style.top = '100px';
+    </script>
+</body>
+</html>
